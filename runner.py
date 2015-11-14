@@ -13,6 +13,9 @@ my_traceroute = TracerouteResult(data).hops
 def isIxp(ip):
 	return 1
 
+def getMemberByIXPIP(ip):
+	return 15170
+
 result = {}
 result['result'] = []
 
@@ -24,7 +27,12 @@ for hop in my_traceroute:
 
 	if isIxp(hop.packets[0].origin):
 		this_hop['ixp'] = "decix"
-		this_hop['asnumber'] = "12345"
+
+		try:
+			this_hop['asnumber'] = getMemberByIXPIP(hop.packets[0].origin)
+		except:
+			this_hop['asnumber'] = 12345
+
 	else:
 		this_hop['asnumber'] = resolve_as.findAsn(hop.packets[0].origin)
 
