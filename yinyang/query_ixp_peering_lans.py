@@ -43,14 +43,14 @@ def store_ixp_peering_lans():
         ixlan_name = iname
         for ixlan_info in ix2lans[ ix_id ]:
             if ixlan_info['name']:
-                ixlan_name += "-%s" % ifxlan_info['name']
+                ixlan_name += "-%s" % ixlan_info['name']
             elif ixlan_info['desc']:
-                ixlan_name += "-%s" % ifxlan_info['name']
+                ixlan_name += "-%s" % ixlan_info['name']
             ccix[ icountry ].append({
                 'name': ixlan_name,
                 'peeringlans': ixlan_info['peeringlans']
             })
     return ccix
-f = open('ixp_peering_lans','wb') 
-pickle.dump(store_ixp_peering_lans(), f)
-f.close()
+#f = open('ixp_peering_lans','wb')
+#pickle.dump(store_ixp_peering_lans(), f)
+#f.close()
