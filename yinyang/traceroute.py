@@ -33,6 +33,7 @@ def run_traceroute(probe_id,destination_ip):
     )
 
     (is_success, response) = atlas_request.create()
+    print response
 
     if not is_success:
         raise Exception('Error creating the measurement.')
@@ -61,7 +62,7 @@ def __fetch_result(response):
 
     # Timeout all subscriptions after 5 secs. Leave seconds empty for no timeout.
     # Make sure you have this line after you start *all* your streams
-    atlas_stream.timeout(seconds=30)
+    atlas_stream.timeout(seconds=90)
     if q.empty():
         raise Exception('Streamer timed out before fetching the result.')
 
