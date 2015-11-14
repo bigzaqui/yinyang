@@ -14,7 +14,6 @@ class Ixp_lan:
             for ixp in ixps:
                 count_ixp = count_ixp + 1
         
-        print 'Number of IXPS: %s' % count_ixp
     def check_for_ixp_ip(self, address):
         for country_code, ixps in self.ixp_lans.iteritems():
             for ixp in ixps:
@@ -24,6 +23,7 @@ class Ixp_lan:
                     ip = IPNetwork(lan)
                     if IPAddress(address) in ip:
                         return country_code, ixp['name']
+        return False,False
 
     def query_for_ip(self, address):
         ip = IPAddress(address)

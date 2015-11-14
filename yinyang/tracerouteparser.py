@@ -3,6 +3,8 @@ import json
 import requests
 
 from ripe.atlas.sagan import TracerouteResult
+from Ixp_lan import Ixp_lan
+
 
 def findAsn(ip):
     r = requests.get("https://stat.ripe.net/data/network-info/data.json?resource=%s" % ip)
@@ -16,42 +18,30 @@ def findAsn(ip):
     return asn
 
 
-# temporary data
-response = urllib2.urlopen('https://atlas.ripe.net/api/v1/measurement/2929523/result/?format=txt')
-data = json.load(response)
-
-my_traceroute = TracerouteResult(data).hops
-
-
-# mock function awaiting sashas work
-def isIxp(ip):
-    return 1
-
-
-def getMemberByIXPIP(ip):
-    return 15170
-
 
 result = {}
 result['result'] = []
 
-for hop in my_traceroute:
-    this_hop = {}
-    this_hop['id'] = hop.index
-    this_hop['rtt'] = hop.packets[0].rtt
-    this_hop['origin'] = hop.packets[0].origin
+def process(my_traceroute):
+    for hop in my_traceroute.hops:
+        this_hop = {}
+        this_hop['id'] = hop.index
+        this_hop['rtt'] = hop.packets[0].rtt
+        this_hop['origin'] = hop.packets[0].origin
+        ixp_object = Ixp_lan()
 
-    if isIxp(hop.packets[0].origin):
-        this_hop['ixp'] = "decix"
+        worked, name = ixp_object.check_for_ixp_ip(hop.packets[0].origin)
+        if worked:
+            this_hop['ixp'] = name
 
-        try:
-            this_hop['asnumber'] = getMemberByIXPIP(hop.packets[0].origin)
-        except:
-            this_hop['asnumber'] = 12345
+            try:
+                this_hop['asnumber'] = ixp_object.query_for_ip(hop.packets[0].origin)
+            except:
+                this_hop['asnumber'] = 12345
 
-    else:
-        this_hop['asnumber'] = findAsn(hop.packets[0].origin)
+        else:
+            this_hop['asnumber'] = findAsn(hop.packets[0].origin)
 
-    result['result'].append(this_hop)
+        result['result'].append(this_hop)
 
-print result
+    return result
