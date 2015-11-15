@@ -52,6 +52,7 @@ import random
 import math
 import networkx
 import matplotlib.pyplot as plt
+import datetime
 
 
 
@@ -388,8 +389,8 @@ def build_the_set(traces):
 
 def draw_results(results):
 
-    asn_bubble_size = 10000
-    ixp_bubble_size = 900
+    ixp_bubble_size = 10000
+    asn_bubble_size = 3000
     sd_bubble_size = 1000
     g_patches = []
 
@@ -482,7 +483,7 @@ def draw_results(results):
 
     
     plt.legend(handles=g_patches)
-    plt.savefig("PathDrawer.png") 
+    plt.savefig("output_%s.png" % datetime.datetime.now().time()) 
     plt.show()
     
 ##########################################
