@@ -27,11 +27,11 @@ def asn():
     pass
 
 
-def run_traceroute_wrapper(src_probe, dst_probe, ip_version,src_asn):
+def run_traceroute_wrapper(src_probe, dst_probe, ip_version,dst_asn):
     dst_probe_ip = dst_probe["address_%s" % ip_version]
     traceroute_object = run_traceroute(str(src_probe['id']), dst_probe_ip)
     traceroute_parsed = process(traceroute_object)
-    pprint(aggregator(traceroute_parsed,src_asn))
+    pprint(aggregator(traceroute_parsed,dst_asn))
 
 
 @asn.command('run')
@@ -48,10 +48,10 @@ def asn_run(src_asn, dst_asn, v6):
         probes[x] = random.choice(list(probe_list))
 
     logger.debug('SRC ---> DST')
-    run_traceroute_wrapper(probes['src'],probes['dst'],ip_version,src_asn)
+    run_traceroute_wrapper(probes['src'],probes['dst'],ip_version,dst_asn)
 
     logger.debug('DST ---> SRC')
-    run_traceroute_wrapper(probes['dst'],probes['src'],ip_version,dst_asn)
+    run_traceroute_wrapper(probes['dst'],probes['src'],ip_version,src_asn)
 
 @cli.group()
 def probe():

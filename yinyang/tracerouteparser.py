@@ -6,16 +6,13 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 def findAsn(ip):
-    r = requests.get("https://stat.ripe.net/data/network-info/data.json?resource=%s" % ip)
-    result = r.json()
-
     try:
-        asn = result['data']['asns'][0]
+        r = requests.get("https://stat.ripe.net/data/network-info/data.json?resource=%s" % ip)
+        result = r.json()
+        return result['data']['asns'][0]
     except:
         # failed to lookup as-number
-        asn = False
-    #print "%s: %s" % (asn, ip)
-    return asn
+        return False
 
 def process(my_traceroute):
     result = {}
