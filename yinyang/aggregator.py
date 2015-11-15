@@ -1,3 +1,6 @@
+import logging
+
+
 def getnode(this_hop):
     if this_hop['ixp']:
         return {"nodetype": "ixp", "descriptor": this_hop['ixp'], "rtt": 0}
@@ -14,7 +17,7 @@ def aggregator(traceroute_parsed, dst_asn, direction):
             aggregated_path.append(getnode(hop))
 
         elif hop['asn']:
-                print "allowing hop value: %s" % hop['asn']
+                logging.debug("allowing hop value: %s" % hop['asn'])
 
                 if aggregated_path[-1]['descriptor'] == hop['asn']:
                     # we already have this asnumber in our path

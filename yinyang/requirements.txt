@@ -1,0 +1,15 @@
+IPy==0.83
+click==5.1
+click-log==0.1.1
+netaddr==0.7.18
+progressbar==2.3
+pyOpenSSL==0.15.1
+python-dateutil==2.4.2
+pytz==2015.7
+requests==2.8.1
+ripe.atlas.cousteau==1.0.4
+ripe.atlas.sagan==1.1.5
+six==1.10.0
+socketIO-client==0.6.5
+websocket-client==0.34.0
+wsgiref==0.1.2
