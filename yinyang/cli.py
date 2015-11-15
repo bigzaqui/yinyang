@@ -9,6 +9,7 @@ import random
 
 import logging
 import click_log
+from drawing import draw_results
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -78,6 +79,7 @@ def asn_run(src_asn, another, dst_asn, v6, ):
         src2_dst['reverse'][-1]['descriptor'] = 'S2'
         results.append(src2_dst)
 
+    draw_results(results)
     pprint(results)
 @cli.group()
 def probe():
