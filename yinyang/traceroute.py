@@ -58,6 +58,7 @@ def __fetch_result(response):
     atlas_stream.bind_stream(stream_type, __on_result_response)
     # Subscribe to new stream for 1001 measurement results
     stream_parameters = {"msm": response}
+    print "measurement: %s" % response
     atlas_stream.start_stream(stream_type=stream_type, **stream_parameters)
 
     # Timeout all subscriptions after 5 secs. Leave seconds empty for no timeout.

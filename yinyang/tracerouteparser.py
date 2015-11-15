@@ -15,21 +15,20 @@ def findAsn(ip):
     try:
         asn = result['data']['asns'][0]
     except:
-        asn = "12345"
+        # failed to lookup as-number
+        asn = False
 
     return asn
 
-
-
-result = {}
-result['result'] = []
-
 def process(my_traceroute):
+    result = {}
+    result['result'] = []
+    
     for hop in my_traceroute.hops:
         if hop.packets[0].origin:
             this_hop = {}
             this_hop['id'] = hop.index
-            this_hop['rtt'] = hop.packets[0].rtt
+            #this_hop['rtt'] = hop.packets[0].rtt
             this_hop['origin'] = hop.packets[0].origin
             ixp_object = Ixp_lan()
 
@@ -41,9 +40,11 @@ def process(my_traceroute):
                 try:
                     this_hop['asn'] = ixp_object.query_for_ip(hop.packets[0].origin)
                 except:
-                    this_hop['asn'] = 12345
+                    #found a rouge AS on an IXP. What to do?
+                    this_hop['asn'] = 101010101
 
             else:
+                this_hop['ixp'] = False
                 this_hop['asn'] = findAsn(hop.packets[0].origin)
 
             result['result'].append(this_hop)

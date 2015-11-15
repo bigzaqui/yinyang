@@ -4,6 +4,7 @@ import sys
 from traceroute import run_traceroute
 import click
 from tracerouteparser import process
+from aggregator import aggregator
 import logging
 from helpers import resolve_as_to_probes, get_probe, get_list_probes_from_asn
 import random
