@@ -29,7 +29,7 @@ def process(my_traceroute):
         if hop.packets[0].origin:
             this_hop = {}
             this_hop['id'] = hop.index
-            this_hop['rtt'] = hop.packets[0].rtt
+            #this_hop['rtt'] = hop.packets[0].rtt
             this_hop['origin'] = hop.packets[0].origin
             ixp_object = Ixp_lan()
 
@@ -44,6 +44,7 @@ def process(my_traceroute):
                     this_hop['asn'] = 12345
 
             else:
+                this_hop['ixp'] = False
                 this_hop['asn'] = findAsn(hop.packets[0].origin)
 
             result['result'].append(this_hop)

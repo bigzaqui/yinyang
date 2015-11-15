@@ -2,6 +2,7 @@ from pprint import pprint
 from traceroute import run_traceroute
 import click
 from tracerouteparser import process
+from aggregator import aggregator
 import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -14,7 +15,7 @@ def cli(probe_id, dst_ip):
     traceroute_object = run_traceroute(probe_id,dst_ip)
     logger.error('Returned traceroute')
     traceroute_parsed = process(traceroute_object)
-    pprint(traceroute_parsed)
+    pprint(aggregator(traceroute_parsed))
 
 if __name__ == "__main__":
     cli()
