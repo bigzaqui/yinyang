@@ -1,3 +1,5 @@
+
+
 """
 **********
 PathDrawer
@@ -36,6 +38,7 @@ try:
     import matplotlib
     import matplotlib.path
     import matplotlib.pylab
+
 except ImportError:
     raise ImportError, "Import Error: not able to import matplotlib."
 except RuntimeError:
@@ -47,7 +50,8 @@ MPath=matplotlib.path.Path
 import numpy
 import random
 import math
-
+import networkx
+import matplotlib.pyplot as plt
 
 
 
@@ -380,14 +384,9 @@ def build_the_set(traces):
             node_set.add(hop['descriptor']) 
             node_desc_map[hop['descriptor']] = hop['nodetype'] 
     return node_set, node_desc_map
-    
-##########################################
-if __name__ == "__main__":
 
-    # Example
-    
-    import networkx
-    import matplotlib.pyplot as plt
+
+def draw_results(results):
 
     asn_bubble_size = 10000
     ixp_bubble_size = 900
@@ -395,36 +394,6 @@ if __name__ == "__main__":
     g_patches = []
 
     colors=('b','g','r','c','m','y')
-
-    results = [
-{ 'forward': [{'descriptor': 'S1', 'nodetype': 'source', 'rtt': 0},
-               {'descriptor': u'12322', 'nodetype': 'asn', 'rtt': 0},
-               {'descriptor': 'AMS-IX', 'nodetype': 'ixp', 'rtt': 0},
-               {'descriptor': u'8473', 'nodetype': 'asn', 'rtt': 0},
-               {'descriptor': 'D', 'nodetype': 'destination', 'rtt': 0}],
-    'forward_rtt': 100.2,
-   'reverse': [{'descriptor': 'D', 'nodetype': 'source', 'rtt': 0},
-                  {'descriptor': u'8473', 'nodetype': 'asn', 'rtt': 0},
-                  {'descriptor': 'DE-CIX Frankfurt', 'nodetype': 'ixp', 'rtt': 0},
-                  {'descriptor': u'12322', 'nodetype': 'asn', 'rtt': 0},
-                  {'descriptor': 'S1', 'nodetype': 'destination', 'rtt': 0}],
-                  'reverse_rtt': 100.3,
-},
-{ 'forward': [{'descriptor': 'S2', 'nodetype': 'source', 'rtt': 0},
-               {'descriptor': u'12322', 'nodetype': 'asn', 'rtt': 0},
-               {'descriptor': 'AMS-IX', 'nodetype': 'ixp', 'rtt': 0},
-               {'descriptor': u'8473', 'nodetype': 'asn', 'rtt': 0},
-               {'descriptor': 'D', 'nodetype': 'destination', 'rtt': 0}],
-              'forward_rtt': 100.2, 
-   'reverse': [{'descriptor': 'D', 'nodetype': 'source', 'rtt': 0},
-                  {'descriptor': u'8473', 'nodetype': 'asn', 'rtt': 0},
-                  {'descriptor': 'DE-CIX Frankfurt', 'nodetype': 'ixp', 'rtt': 0},
-                  {'descriptor': u'12322', 'nodetype': 'asn', 'rtt': 0},
-                  {'descriptor': 'S2', 'nodetype': 'destination', 'rtt': 0}],
-                  'reverse_rtt': 90.7,
-},
-]
-
 
     g = networkx.Graph()
     desc_set, node_desc = build_the_set(results)
@@ -515,5 +484,42 @@ if __name__ == "__main__":
     plt.legend(handles=g_patches)
     plt.savefig("PathDrawer.png") 
     plt.show()
+    
+##########################################
+if __name__ == "__main__":
+
+    results = [
+{ 'forward': [{'descriptor': 'S1', 'nodetype': 'source', 'rtt': 0},
+               {'descriptor': u'12322', 'nodetype': 'asn', 'rtt': 0},
+               {'descriptor': 'AMS-IX', 'nodetype': 'ixp', 'rtt': 0},
+               {'descriptor': u'8473', 'nodetype': 'asn', 'rtt': 0},
+               {'descriptor': 'D', 'nodetype': 'destination', 'rtt': 0}],
+    'forward_rtt': 100.2,
+   'reverse': [{'descriptor': 'D', 'nodetype': 'source', 'rtt': 0},
+                  {'descriptor': u'8473', 'nodetype': 'asn', 'rtt': 0},
+                  {'descriptor': 'DE-CIX Frankfurt', 'nodetype': 'ixp', 'rtt': 0},
+                  {'descriptor': u'12322', 'nodetype': 'asn', 'rtt': 0},
+                  {'descriptor': 'S1', 'nodetype': 'destination', 'rtt': 0}],
+                  'reverse_rtt': 100.3,
+},
+{ 'forward': [{'descriptor': 'S2', 'nodetype': 'source', 'rtt': 0},
+               {'descriptor': u'12322', 'nodetype': 'asn', 'rtt': 0},
+               {'descriptor': 'AMS-IX', 'nodetype': 'ixp', 'rtt': 0},
+               {'descriptor': u'8473', 'nodetype': 'asn', 'rtt': 0},
+               {'descriptor': 'D', 'nodetype': 'destination', 'rtt': 0}],
+              'forward_rtt': 100.2, 
+   'reverse': [{'descriptor': 'D', 'nodetype': 'source', 'rtt': 0},
+                  {'descriptor': u'8473', 'nodetype': 'asn', 'rtt': 0},
+                  {'descriptor': 'DE-CIX Frankfurt', 'nodetype': 'ixp', 'rtt': 0},
+                  {'descriptor': u'12322', 'nodetype': 'asn', 'rtt': 0},
+                  {'descriptor': 'S2', 'nodetype': 'destination', 'rtt': 0}],
+                  'reverse_rtt': 90.7,
+},
+]
+
+    draw_results(results)
+
+
+    
 
     
