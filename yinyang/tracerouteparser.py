@@ -22,7 +22,7 @@ def process(my_traceroute):
         if hop.packets[0].origin:
             this_hop = {}
             this_hop['id'] = hop.index
-            #this_hop['rtt'] = hop.packets[0].rtt
+            this_hop['rtt'] = hop.packets[0].rtt
             this_hop['origin'] = hop.packets[0].origin
             ixp_object = Ixp_lan()
 

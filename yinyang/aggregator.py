@@ -33,4 +33,6 @@ def aggregator(traceroute_parsed, dst_asn):
                     # this is the first occurence of this asnumber. add it
                     aggregated_path.append(getnode(hop))
 
-    return {"result": aggregated_path}
+
+
+    return aggregated_path,traceroute_parsed['result'][-1]['rtt']
