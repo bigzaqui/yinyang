@@ -9,15 +9,18 @@ import requests.packages.urllib3
 import Queue
 from ripe.atlas.sagan import TracerouteResult
 requests.packages.urllib3.disable_warnings()
+logger = logging.getLogger(__name__)
 
 atlas_stream = AtlasStream()
 q = Queue.Queue()
 
 
-def run_traceroute(probe_id,destination_ip):
+def run_traceroute(probe_id,destination_ip, ip_version):
     global q
+    af = 4 if ip_version == 'v4' else 6
+
     traceroute = Traceroute(
-        af=4,
+        af=af,
         target=destination_ip,
         description="testing",
         protocol="ICMP",
@@ -34,7 +37,6 @@ def run_traceroute(probe_id,destination_ip):
     )
 
     (is_success, response) = atlas_request.create()
-    logging.debug(response)
 
     if not is_success:
         raise Exception('Error creating the measurement.')

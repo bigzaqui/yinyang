@@ -32,7 +32,7 @@ def asn():
 
 def run_traceroute_wrapper(src_probe, dst_probe, ip_version, dst_asn):
     dst_probe_ip = dst_probe["address_%s" % ip_version]
-    traceroute_object = run_traceroute(str(src_probe['id']), dst_probe_ip)
+    traceroute_object = run_traceroute(str(src_probe['id']), dst_probe_ip, ip_version)
     traceroute_parsed = process(traceroute_object)
     return aggregator(traceroute_parsed, dst_asn)
 
