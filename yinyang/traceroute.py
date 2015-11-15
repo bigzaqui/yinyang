@@ -62,7 +62,7 @@ def __fetch_result(response):
 
     # Timeout all subscriptions after 5 secs. Leave seconds empty for no timeout.
     # Make sure you have this line after you start *all* your streams
-    atlas_stream.timeout(seconds=90)
+    atlas_stream.timeout(seconds=200)
     if q.empty():
         raise Exception('Streamer timed out before fetching the result.')
 
