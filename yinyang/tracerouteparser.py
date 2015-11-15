@@ -43,6 +43,6 @@ def process(my_traceroute):
 
             result['result'].append(this_hop)
         else:
-            logger.error('skipped invalid hop')
+            logger.debug('skipped invalid hop')
 
     return result
