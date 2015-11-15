@@ -488,34 +488,24 @@ def draw_results(results):
 ##########################################
 if __name__ == "__main__":
 
-    results = [
-{ 'forward': [{'descriptor': 'S1', 'nodetype': 'source', 'rtt': 0},
-               {'descriptor': u'12322', 'nodetype': 'asn', 'rtt': 0},
-               {'descriptor': 'AMS-IX', 'nodetype': 'ixp', 'rtt': 0},
-               {'descriptor': u'8473', 'nodetype': 'asn', 'rtt': 0},
-               {'descriptor': 'D', 'nodetype': 'destination', 'rtt': 0}],
-    'forward_rtt': 100.2,
-   'reverse': [{'descriptor': 'D', 'nodetype': 'source', 'rtt': 0},
-                  {'descriptor': u'8473', 'nodetype': 'asn', 'rtt': 0},
-                  {'descriptor': 'DE-CIX Frankfurt', 'nodetype': 'ixp', 'rtt': 0},
-                  {'descriptor': u'12322', 'nodetype': 'asn', 'rtt': 0},
-                  {'descriptor': 'S1', 'nodetype': 'destination', 'rtt': 0}],
-                  'reverse_rtt': 100.3,
-},
-{ 'forward': [{'descriptor': 'S2', 'nodetype': 'source', 'rtt': 0},
-               {'descriptor': u'12322', 'nodetype': 'asn', 'rtt': 0},
-               {'descriptor': 'AMS-IX', 'nodetype': 'ixp', 'rtt': 0},
-               {'descriptor': u'8473', 'nodetype': 'asn', 'rtt': 0},
-               {'descriptor': 'D', 'nodetype': 'destination', 'rtt': 0}],
-              'forward_rtt': 100.2, 
-   'reverse': [{'descriptor': 'D', 'nodetype': 'source', 'rtt': 0},
-                  {'descriptor': u'8473', 'nodetype': 'asn', 'rtt': 0},
-                  {'descriptor': 'DE-CIX Frankfurt', 'nodetype': 'ixp', 'rtt': 0},
-                  {'descriptor': u'12322', 'nodetype': 'asn', 'rtt': 0},
-                  {'descriptor': 'S2', 'nodetype': 'destination', 'rtt': 0}],
-                  'reverse_rtt': 90.7,
-},
-]
+    results = [{'forward': [{'descriptor': 'S1', 'nodetype': 'source', 'rtt': 0},
+              {'descriptor': u'9143', 'nodetype': 'asn', 'rtt': 0},
+              {'descriptor': 'AMS-IX', 'nodetype': 'ixp', 'rtt': 0},
+              {'descriptor': u'3265', 'nodetype': 'asn', 'rtt': 0},
+              {'descriptor': 'D', 'nodetype': 'destination', 'rtt': 0}],
+  'forward_rtt': 100.2,
+  'reverse': [{'descriptor': 'D', 'nodetype': 'source', 'rtt': 0},
+              {'descriptor': u'3265', 'nodetype': 'asn', 'rtt': 0},
+              {'descriptor': 'AMS-IX', 'nodetype': 'ixp', 'rtt': 0},
+              {'descriptor': u'9143', 'nodetype': 'asn', 'rtt': 0},
+              {'descriptor': 'S1', 'nodetype': 'destination', 'rtt': 0}],
+  'reverse_rtt': 90.3},
+ {'forward': [{'descriptor': 'S2', 'nodetype': 'source', 'rtt': 0},
+              {'descriptor': u'3265', 'nodetype': 'asn', 'rtt': 0}],
+  'forward_rtt': 50.1,
+  'reverse': [{'descriptor': 'D', 'nodetype': 'source', 'rtt': 0},
+              {'descriptor': u'3265', 'nodetype': 'asn', 'rtt': 0}],
+  'reverse_rtt': 1005.1}]
 
     draw_results(results)
 
