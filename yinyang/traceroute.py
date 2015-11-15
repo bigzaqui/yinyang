@@ -22,7 +22,7 @@ def run_traceroute(probe_id,destination_ip):
         protocol="ICMP",
     )
 
-    source = AtlasSource(type="probes", value=probe_id, requested=1)
+    source = AtlasSource(type="probes", value=probe_id, requested=10)
 
     atlas_request = AtlasCreateRequest(
         start_time=datetime.utcnow(),

@@ -30,7 +30,7 @@ def run_traceroute_wrapper(src_probe, dst_probe, ip_version):
     dst_probe_ip = dst_probe["address_%s" % ip_version]
     traceroute_object = run_traceroute(str(src_probe['id']), dst_probe_ip)
     traceroute_parsed = process(traceroute_object)
-    pprint([x['asn'] for x in traceroute_parsed['result']])
+    pprint(aggregator(traceroute_parsed))
 
 
 @asn.command('run')
