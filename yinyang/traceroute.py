@@ -1,3 +1,4 @@
+import logging
 from constants import ATLAS_API_KEY
 from datetime import datetime
 from ripe.atlas.cousteau import (
@@ -22,7 +23,7 @@ def run_traceroute(probe_id,destination_ip):
         protocol="ICMP",
     )
 
-    source = AtlasSource(type="probes", value=probe_id, requested=1)
+    source = AtlasSource(type="probes", value=probe_id, requested=10)
 
     atlas_request = AtlasCreateRequest(
         start_time=datetime.utcnow(),
@@ -33,7 +34,7 @@ def run_traceroute(probe_id,destination_ip):
     )
 
     (is_success, response) = atlas_request.create()
-    print response
+    logging.debug(response)
 
     if not is_success:
         raise Exception('Error creating the measurement.')
@@ -58,11 +59,12 @@ def __fetch_result(response):
     atlas_stream.bind_stream(stream_type, __on_result_response)
     # Subscribe to new stream for 1001 measurement results
     stream_parameters = {"msm": response}
+    logging.debug("measurement: %s" % response)
     atlas_stream.start_stream(stream_type=stream_type, **stream_parameters)
 
     # Timeout all subscriptions after 5 secs. Leave seconds empty for no timeout.
     # Make sure you have this line after you start *all* your streams
-    atlas_stream.timeout(seconds=90)
+    atlas_stream.timeout(seconds=200)
     if q.empty():
         raise Exception('Streamer timed out before fetching the result.')
 

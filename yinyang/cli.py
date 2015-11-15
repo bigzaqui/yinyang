@@ -2,39 +2,74 @@ from pprint import pprint
 from traceroute import run_traceroute
 import click
 from tracerouteparser import process
-import logging
-from probe_stuff import resolve_as_to_probes
+from aggregator import aggregator
+from helpers import get_probe, get_list_probes_from_asn
 import random
 
-logging.basicConfig(level=logging.INFO)
+import logging
+import click_log
+
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
+requests_log = logging.getLogger("requests.packages.urllib3")
+requests_log.setLevel(logging.WARNING)
+requests_log.propagate = True
 
 
-@click.command()
-@click.option('--src_asn')
-@click.option('--dst_asn')
+@click.group()
+@click.option('--verbose/--no-verbose', default=False)
+def cli(verbose):
+    if verbose:
+        requests_log.setLevel(logging.DEBUG)
+        logger.setLevel(logging.DEBUG)
+
+
+@cli.group()
+def asn():
+    pass
+
+
+def run_traceroute_wrapper(direction, src_probe, dst_probe, ip_version, dst_asn):
+    dst_probe_ip = dst_probe["address_%s" % ip_version]
+    traceroute_object = run_traceroute(str(src_probe['id']), dst_probe_ip)
+    traceroute_parsed = process(traceroute_object)
+    pprint(aggregator(traceroute_parsed, dst_asn, direction))
+
+
+@asn.command('run')
+@click_log.init()
+@click.option('--src_asn', required=True)
+@click.option('--dst_asn', required=True)
 @click.option('-v6', default=False)
-def cli(src_asn, dst_asn, v6):
+def asn_run(src_asn, dst_asn, v6):
     ip_version = 'v6' if v6 else 'v4'
-    asns = dict(src=src_asn,dst=dst_asn)
+    asns = dict(src=src_asn, dst=dst_asn)
     probes = {}
     for x in asns.keys():
-        tmp = resolve_as_to_probes(asns[x], ip_version)
-        if tmp:
-            probe_object = random.choice(list(tmp))
-            probes[x] = str(probe_object['id']), probe_object["address_%s" % ip_version]
+        probe_list = get_list_probes_from_asn(asns[x], ip_version)
+        probes[x] = random.choice(list(probe_list))
 
-        else:
-            raise Exception('no probes found for the src_asn.')
+    logger.debug('SRC ---> DST')
+    run_traceroute_wrapper('there', probes['src'], probes['dst'], ip_version, dst_asn)
 
-    #SRC -> DST
-    pprint(probes)
-    traceroute_object = run_traceroute(probes['src'][0], probes['dst'][1])
-    pprint(traceroute_object.raw_data)
+    logger.debug('DST ---> SRC')
+    run_traceroute_wrapper('back', probes['dst'], probes['src'], ip_version, src_asn)
 
-    logger.error('Returned traceroute')
-    traceroute_parsed = process(traceroute_object)
-    pprint(traceroute_parsed)
+
+@cli.group()
+def probe():
+    pass
+
+
+@probe.command('run')
+@click_log.init()
+@click.option('--src_probe_id', required=True)
+@click.option('--dst_probe_id', required=True)
+@click.option('-v6', default=False)
+def probe_run(src_probe_id, dst_probe_id, v6):
+    ip_version = 'v6' if v6 else 'v4'
+    run_traceroute_wrapper(get_probe(src_probe_id), get_probe(dst_probe_id), ip_version, 'EMPTY')
+
 
 if __name__ == "__main__":
     cli()
