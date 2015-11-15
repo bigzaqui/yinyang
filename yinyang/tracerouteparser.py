@@ -17,7 +17,7 @@ def findAsn(ip):
     except:
         # failed to lookup as-number
         asn = False
-
+    #print "%s: %s" % (asn, ip)
     return asn
 
 def process(my_traceroute):
