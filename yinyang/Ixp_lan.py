@@ -15,14 +15,14 @@ class Ixp_lan:
                 count_ixp = count_ixp + 1
         
     def check_for_ixp_ip(self, address):
+        ip = IPAddress(address)
         for country_code, ixps in self.ixp_lans.iteritems():
             for ixp in ixps:
-                #print ixp['name'].decode('utf-8')
-                #print ixp['peeringlans']
                 for lan in ixp['peeringlans']:
-                    ip = IPNetwork(lan)
-                    if IPAddress(address) in ip:
-                        return country_code, ixp['name']
+                    network = IPNetwork(lan)
+                    if network.version == ip.version:
+                        if ip in network:
+                            return country_code, ixp['name']
         return False,False
 
     def query_for_ip(self, address):
