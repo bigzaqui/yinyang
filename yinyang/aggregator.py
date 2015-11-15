@@ -1,4 +1,5 @@
 
+#fake source as data
 source_as = 1299
 
 def getnode(this_hop):
@@ -17,6 +18,7 @@ def aggregator(traceroute_parsed):
 		else:
 			if aggregated_path[-1]['descriptor'] == hop['asn']:
 				#aggregated_path[-1]['rtt'] == hop['rtt']
+				aggregated_path[-1]['rtt'] == 0
 			else:
 				aggregated_path.append(getnode(hop))
 
