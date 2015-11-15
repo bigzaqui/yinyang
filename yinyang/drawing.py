@@ -435,7 +435,7 @@ def draw_results(results):
     #print node_index
     #print edges
     g.add_edges_from(edges)
-    plt.figure(1,figsize=(12,10)) 
+    plt.figure(1,figsize=(20,10)) 
 
     pos=networkx.drawing.spring_layout(g)
     normalize_layout(pos)
