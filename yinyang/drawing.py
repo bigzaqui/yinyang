@@ -162,7 +162,7 @@ def normalize_layout(pos):
 
 
 #####################
-def draw_path(G, pos, path, shifts=None, color='r', linestyle='solid', linewidth=1.0):
+def draw_path(G, pos, path, g_patches, shifts=None, color='r', linestyle='solid', linewidth=1.0):
     '''Draw a path 'path' in graph G.
 
     Parameters
@@ -269,18 +269,19 @@ def draw_path(G, pos, path, shifts=None, color='r', linestyle='solid', linewidth
     # Finally, create a nice path and display it
     path = MPath(vertices, codes)
     #patch1 = matplotlib.patches.Arrow(0,0,0.1,0.1, edgecolor=color, linestyle=linestyle, linewidth=linewidth, fill=False, alpha=1.0)
-    patch = matplotlib.patches.PathPatch(path, edgecolor=color, linestyle=linestyle, linewidth=linewidth, fill=False, alpha=1.0)
+    patch = matplotlib.patches.PathPatch(path, edgecolor=color, linestyle=linestyle, linewidth=linewidth, fill=False, alpha=1.0, label='100ms')
     ax=matplotlib.pylab.gca()
     ax.add_patch(patch)
     #ax.add_patch(patch1)
     ax.update_datalim(((0,0),(1,1)))
     ax.autoscale_view()
+    g_patches.append(patch)
 
     return
     
 
 #####################
-def draw_many_paths(G, pos, paths, max_shift=0.02, linewidth=2.0):
+def draw_many_paths(G, pos, paths, g_patches, colors, max_shift=0.02, linewidth=2.0):
     '''Draw every path in 'paths' in graph G.
     Colors and linestyles are chosen automatically.
     All paths are visible - no path section can be covered by another path.
@@ -324,12 +325,12 @@ def draw_many_paths(G, pos, paths, max_shift=0.02, linewidth=2.0):
     single_shift = max_shift/max(edge2count.values())
 
     # Draw the edge_paths by calling draw_path(...). Use edge2shift to prevent the path overlap on some edges.
-    colors=('b','g','r','c','m','y')
-    linestyles=('solid','dashed','dashdot','dotted')
+    
+    linestyles=('solid','dashed')
     edge2shift={}
     for i,path in enumerate(edge_paths):
         shifts=[ edge2shift.setdefault(e, single_shift)  for e in path]      
-        draw_path(G, pos, path, color=colors[0], linestyle=linestyles[i % len(linestyles)], linewidth=linewidth, shifts=shifts)
+        draw_path(G, pos, path, g_patches, color=colors[i/2], linestyle=linestyles[i % len(linestyles)], linewidth=linewidth, shifts=shifts)
         for e in path:   edge2shift[e] += single_shift
 
     return 
@@ -344,13 +345,16 @@ def get_descriptor(path,desc_set):
 
 def calc_edges_for_path(trace, node_index):
     edges = []
-    path = [node_index['S']]
+    path = [node_index[trace[0]['descriptor']]]
     for i in range(0,len(trace)-1):
         left = node_index[trace[i]['descriptor']]
-        right = node_index[trace[i+1]['descriptor']]
-        edges.append((left,right))
+        right = node_index[trace[i+1]['descriptor']]  
+        if left > right:
+            edges.append((right,left))
+        else:
+            edges.append((left,right))
         path.append(right)
-    print edges, path
+    #print edges, path
     return edges, path
 
 def get_descriptor_map(trace, node_desc):
@@ -365,16 +369,72 @@ def get_nodelist(node_set,node_desc, node_index, nodetype):
             nodelist.append(node_index[node])
     return nodelist
 
-def draw_trace_route():
-        desc_set = set()
-    print reverse['result'].reverse()
+def build_the_set(traces):
+    node_set = set()
+    node_desc_map = {}
+    for trace in traces:
+        for hop in trace['forward']:
+            node_set.add(hop['descriptor'])
+            node_desc_map[hop['descriptor']] = hop['nodetype']
+        for hop in trace['reverse']:
+            node_set.add(hop['descriptor']) 
+            node_desc_map[hop['descriptor']] = hop['nodetype'] 
+    return node_set, node_desc_map
+    
+##########################################
+if __name__ == "__main__":
 
-    desc_set = get_descriptor(forward['result'],desc_set)
-    desc_set = get_descriptor(reversed(reverse['result']),desc_set)
+    # Example
+    
+    import networkx
+    import matplotlib.pyplot as plt
 
-    node_desc = {}
-    node_desc = get_descriptor_map(forward['result'],node_desc)
-    node_desc = get_descriptor_map(reverse['result'],node_desc)
+    asn_bubble_size = 10000
+    ixp_bubble_size = 900
+    sd_bubble_size = 1000
+    g_patches = []
+
+    colors=('b','g','r','c','m','y')
+
+    results = [
+{ 'forward': [{'descriptor': 'S1', 'nodetype': 'source', 'rtt': 0},
+               {'descriptor': u'12322', 'nodetype': 'asn', 'rtt': 0},
+               {'descriptor': 'AMS-IX', 'nodetype': 'ixp', 'rtt': 0},
+               {'descriptor': u'8473', 'nodetype': 'asn', 'rtt': 0},
+               {'descriptor': 'D', 'nodetype': 'destination', 'rtt': 0}],
+    'forward_rtt': 100.2,
+   'reverse': [{'descriptor': 'D', 'nodetype': 'source', 'rtt': 0},
+                  {'descriptor': u'8473', 'nodetype': 'asn', 'rtt': 0},
+                  {'descriptor': 'DE-CIX Frankfurt', 'nodetype': 'ixp', 'rtt': 0},
+                  {'descriptor': u'12322', 'nodetype': 'asn', 'rtt': 0},
+                  {'descriptor': 'S1', 'nodetype': 'destination', 'rtt': 0}],
+                  'reverse_rtt': 100.3,
+},
+{ 'forward': [{'descriptor': 'S2', 'nodetype': 'source', 'rtt': 0},
+               {'descriptor': u'12322', 'nodetype': 'asn', 'rtt': 0},
+               {'descriptor': 'AMS-IX', 'nodetype': 'ixp', 'rtt': 0},
+               {'descriptor': u'8473', 'nodetype': 'asn', 'rtt': 0},
+               {'descriptor': 'D', 'nodetype': 'destination', 'rtt': 0}],
+              'forward_rtt': 100.2, 
+   'reverse': [{'descriptor': 'D', 'nodetype': 'source', 'rtt': 0},
+                  {'descriptor': u'8473', 'nodetype': 'asn', 'rtt': 0},
+                  {'descriptor': 'DE-CIX Frankfurt', 'nodetype': 'ixp', 'rtt': 0},
+                  {'descriptor': u'12322', 'nodetype': 'asn', 'rtt': 0},
+                  {'descriptor': 'S2', 'nodetype': 'destination', 'rtt': 0}],
+                  'reverse_rtt': 90.7,
+},
+]
+
+
+    g = networkx.Graph()
+    desc_set, node_desc = build_the_set(results)
+    
+    #desc_set = get_descriptor(forward,desc_set)
+    #desc_set = get_descriptor(reversed(reverse),desc_set)
+
+    #node_desc = {}
+    #node_desc = get_descriptor_map(forward,node_desc)
+    #node_desc = get_descriptor_map(reverse,node_desc)
 
     nodes = []
     labels = {}
@@ -386,26 +446,28 @@ def draw_trace_route():
         node_index[str(node)] = i
         i = i +1
     
-    
-    print node_index
-    g = networkx.Graph()
     g.add_nodes_from(nodes)
 
     # generate edges:
-    edges = []
-
-    left_edges, left_path = calc_edges_for_path(forward['result'],node_index)
-    right_edges, right_path = calc_edges_for_path(reverse['result'],node_index)
-
-    edges = left_edges + right_edges
+    edges_set = set()
+    paths = []
+    for trace in results:
+        some_edges = []
+        left_edges, left_path = calc_edges_for_path(trace['forward'],node_index)
+        right_edges, right_path = calc_edges_for_path(trace['reverse'],node_index)
+        some_edges = left_edges + right_edges
+        paths.append(left_path)
+        paths.append(right_path)
+        for edge in some_edges:
+            edges_set.add(edge)
    
+    
+    edges = list(edges_set)
+    #print node_index
+    #print edges
     g.add_edges_from(edges)
     plt.figure(1,figsize=(12,10)) 
-    #path1 = networkx.shortest_path(g, 2, 8)
-    #path2 = networkx.shortest_path(g, 0, 8)
-    #path3 = [(1,0),(0,5),(5,7)]
-    path4 = [1,2,3]
-    path5 = [3,2,1]
+
     pos=networkx.drawing.spring_layout(g)
     normalize_layout(pos)
     #networkx.draw(g,pos, node_size=10000)
@@ -435,40 +497,22 @@ def draw_trace_route():
                        node_size=sd_bubble_size,
                    alpha=0.8)
 
-##########################################
-if __name__ == "__main__":
-
-    # Example
-    
-    import networkx
-    import matplotlib.pyplot as plt
-
-    asn_bubble_size = 10000
-    ixp_bubble_size = 900
-    sd_bubble_size = 1000
-
-
-    forward = {
- 'direction': "there",
- 'result': [{'descriptor': 'S', 'nodetype': 'source', 'rtt': 0},
- {'descriptor': u'12322', 'nodetype': 'asn', 'rtt': 0},
- {'descriptor': 'AMS-IX', 'nodetype': 'ixp', 'rtt': 0},
- {'descriptor': u'8473', 'nodetype': 'asn', 'rtt': 0},
- {'descriptor': 'D', 'nodetype': 'destination', 'rtt': 0}]
- }
-     
-
-    reverse = { 'direction': "back",
-    'result': [{'descriptor': 'D', 'nodetype': 'source', 'rtt': 0},
-     {'descriptor': u'8473', 'nodetype': 'asn', 'rtt': 0},
-     {'descriptor': 'DE-CIX Frankfurt', 'nodetype': 'ixp', 'rtt': 0},
-     {'descriptor': u'12322', 'nodetype': 'asn', 'rtt': 0},
-     {'descriptor': 'S', 'nodetype': 'destination', 'rtt': 0}]}
-
-
-
     networkx.draw_networkx_labels(g,pos, labels, node_size=140)
-    draw_many_paths(g, pos, [left_path, right_path], max_shift=0.03)
+    draw_many_paths(g, pos, paths, g_patches, colors, max_shift=0.03)
+
+    
+    #draw_trace_route(results[0]['forward'],results[0]['reverse'],g,results)
+    #draw_trace_route(results[1]['forward'],results[1]['reverse'],g,results)
+    g_patches = []
+    i = 0
+    for trace in results:
+        rtt = (trace['forward_rtt'] + trace['reverse_rtt']) / 2
+        patch = matplotlib.patches.Arrow(0,0,0.1,0.1, color=colors[i], label='RTT %sms' % rtt)
+        g_patches.append(patch)
+        i = i + 1
+
+    
+    plt.legend(handles=g_patches)
     plt.savefig("PathDrawer.png") 
     plt.show()
 
