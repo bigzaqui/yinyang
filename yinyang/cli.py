@@ -1,4 +1,5 @@
 from pprint import pprint
+import sys
 from traceroute import run_traceroute
 import click
 from tracerouteparser import process
@@ -72,4 +73,8 @@ def probe_run(src_probe_id, dst_probe_id, v6):
 
 
 if __name__ == "__main__":
-    cli()
+    try:
+        cli()
+    except Exception as e:
+        click.echo(e.message)
+        sys.exit(1)
