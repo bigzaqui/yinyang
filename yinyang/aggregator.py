@@ -9,7 +9,7 @@ def getnode(this_hop):
         return {"nodetype": "asn", "descriptor": this_hop['asn'], "rtt": 0}
 
 
-def aggregator(traceroute_parsed, dst_asn, direction):
+def aggregator(traceroute_parsed, dst_asn):
     aggregated_path = [{"nodetype": "source", "descriptor": 0, "rtt": 0}]
 
     for hop in traceroute_parsed['result']:
@@ -33,4 +33,4 @@ def aggregator(traceroute_parsed, dst_asn, direction):
                     # this is the first occurence of this asnumber. add it
                     aggregated_path.append(getnode(hop))
 
-    return {"direction": direction, "result": aggregated_path}
+    return {"result": aggregated_path}
