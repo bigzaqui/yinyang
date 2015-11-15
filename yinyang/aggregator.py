@@ -6,7 +6,7 @@ def getnode(this_hop):
         return {"nodetype": "asn", "descriptor": this_hop['asn'], "rtt": 0}
 
 
-def aggregator(traceroute_parsed, dst_asn):
+def aggregator(traceroute_parsed, dst_asn, direction):
     aggregated_path = [{"nodetype": "source", "descriptor": 0, "rtt": 0}]
 
     for hop in traceroute_parsed['result']:
@@ -14,10 +14,11 @@ def aggregator(traceroute_parsed, dst_asn):
             aggregated_path.append(getnode(hop))
 
         elif hop['asn']:
+                print "allowing hop value: %s" % hop['asn']
+
                 if aggregated_path[-1]['descriptor'] == hop['asn']:
                     # we already have this asnumber in our path
-                    #aggregated_path[-1]['rtt'] == hop['rtt']
-                    continue
+                    pass
                 elif hop['asn'] == dst_asn:
                     # we are now in the destination as number for this traceroute. 
                     # this means we have all we need to plot our data
@@ -29,4 +30,4 @@ def aggregator(traceroute_parsed, dst_asn):
                     # this is the first occurence of this asnumber. add it
                     aggregated_path.append(getnode(hop))
 
-    return aggregated_path
+    return {"direction": direction, "result": aggregated_path}
