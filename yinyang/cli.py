@@ -1,12 +1,10 @@
 from pprint import pprint
-from ripe.atlas.cousteau import ProbeRequest
-import sys
 from traceroute import run_traceroute
 import click
 from tracerouteparser import process
 from aggregator import aggregator
 import logging
-from helpers import resolve_as_to_probes, get_probe, get_list_probes_from_asn
+from helpers import get_probe, get_list_probes_from_asn
 import random
 
 logging.basicConfig(level=logging.INFO)
@@ -26,11 +24,11 @@ def asn():
     pass
 
 
-def run_traceroute_wrapper(src_probe, dst_probe, ip_version):
+def run_traceroute_wrapper(src_probe, dst_probe, ip_version,src_asn):
     dst_probe_ip = dst_probe["address_%s" % ip_version]
     traceroute_object = run_traceroute(str(src_probe['id']), dst_probe_ip)
     traceroute_parsed = process(traceroute_object)
-    pprint(aggregator(traceroute_parsed))
+    pprint(aggregator(traceroute_parsed,src_asn))
 
 
 @asn.command('run')
@@ -46,10 +44,10 @@ def asn_run(src_asn, dst_asn, v6):
         probes[x] = random.choice(list(probe_list))
 
     logger.warning('SRC ---> DST')
-    run_traceroute_wrapper(probes['src'],probes['dst'],ip_version)
+    run_traceroute_wrapper(probes['src'],probes['dst'],ip_version,src_asn)
 
     logger.warning('DST ---> SRC')
-    run_traceroute_wrapper(probes['dst'],probes['src'],ip_version)
+    run_traceroute_wrapper(probes['dst'],probes['src'],ip_version,dst_asn)
 
 @cli.group()
 def probe():
@@ -65,7 +63,7 @@ def probe():
 @click.option('-v6', default=False)
 def probe_run(src_probe_id, dst_probe_id, v6):
     ip_version = 'v6' if v6 else 'v4'
-    run_traceroute_wrapper(get_probe(src_probe_id), get_probe(dst_probe_id), ip_version)
+    run_traceroute_wrapper(get_probe(src_probe_id), get_probe(dst_probe_id), ip_version,'EMPTY')
 
 
 if __name__ == "__main__":
