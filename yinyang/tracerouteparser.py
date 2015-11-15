@@ -1,8 +1,5 @@
-import urllib2
-import json
 import requests
 import logging
-from ripe.atlas.sagan import TracerouteResult
 from Ixp_lan import Ixp_lan
 
 logging.basicConfig(level=logging.INFO)

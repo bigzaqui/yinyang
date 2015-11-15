@@ -3,13 +3,16 @@ from traceroute import run_traceroute
 import click
 from tracerouteparser import process
 from aggregator import aggregator
-import logging
 from helpers import get_probe, get_list_probes_from_asn
 import random
 
-logging.basicConfig(level=logging.INFO)
+import logging
+import click_log
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
-
+requests_log = logging.getLogger("requests.packages.urllib3")
+requests_log.setLevel(logging.WARNING)
+requests_log.propagate = True
 
 @click.group()
 def cli():
@@ -32,6 +35,7 @@ def run_traceroute_wrapper(src_probe, dst_probe, ip_version,src_asn):
 
 
 @asn.command('run')
+@click_log.init()
 @click.option('--src_asn', required=True)
 @click.option('--dst_asn', required=True)
 @click.option('-v6', default=False)
@@ -43,10 +47,10 @@ def asn_run(src_asn, dst_asn, v6):
         probe_list = get_list_probes_from_asn(asns[x], ip_version)
         probes[x] = random.choice(list(probe_list))
 
-    logger.warning('SRC ---> DST')
+    logger.debug('SRC ---> DST')
     run_traceroute_wrapper(probes['src'],probes['dst'],ip_version,src_asn)
 
-    logger.warning('DST ---> SRC')
+    logger.debug('DST ---> SRC')
     run_traceroute_wrapper(probes['dst'],probes['src'],ip_version,dst_asn)
 
 @cli.group()
@@ -58,6 +62,7 @@ def probe():
 
 
 @probe.command('run')
+@click_log.init()
 @click.option('--src_probe_id', required=True)
 @click.option('--dst_probe_id', required=True)
 @click.option('-v6', default=False)
