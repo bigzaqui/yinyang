@@ -33,6 +33,6 @@ def get_probe_from_close_probe_different_asn(asns, probe, ip_version):
     r = requests.get(url, params=filters)
     if r:
         v = r.json()
-        return next(x for x in v['objects'] if x["asn_%s" % ip_version] not in asns)
+        return next(x for x in v['objects'] if str(x["asn_%s" % ip_version]) not in asns)
     else:
         raise Exception('cannot find a close probe to the ASN: %s:' % probe['id'])
