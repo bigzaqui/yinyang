@@ -8,11 +8,13 @@ import random
 
 import logging
 import click_log
+
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 requests_log = logging.getLogger("requests.packages.urllib3")
-requests_log.setLevel(logging.WARNING)
+requests_log.setLevel(logging.DEBUG)
 requests_log.propagate = True
+
 
 @click.group()
 def cli():
@@ -21,17 +23,14 @@ def cli():
 
 @cli.group()
 def asn():
-    """
-    Information about ip ranges.
-    """
     pass
 
 
-def run_traceroute_wrapper(src_probe, dst_probe, ip_version,dst_asn):
+def run_traceroute_wrapper(src_probe, dst_probe, ip_version, dst_asn):
     dst_probe_ip = dst_probe["address_%s" % ip_version]
     traceroute_object = run_traceroute(str(src_probe['id']), dst_probe_ip)
     traceroute_parsed = process(traceroute_object)
-    pprint(aggregator(traceroute_parsed,dst_asn))
+    pprint(aggregator(traceroute_parsed, dst_asn))
 
 
 @asn.command('run')
@@ -48,16 +47,14 @@ def asn_run(src_asn, dst_asn, v6):
         probes[x] = random.choice(list(probe_list))
 
     logger.debug('SRC ---> DST')
-    run_traceroute_wrapper(probes['src'],probes['dst'],ip_version,dst_asn)
+    run_traceroute_wrapper(probes['src'], probes['dst'], ip_version, dst_asn)
 
     logger.debug('DST ---> SRC')
-    run_traceroute_wrapper(probes['dst'],probes['src'],ip_version,src_asn)
+    run_traceroute_wrapper(probes['dst'], probes['src'], ip_version, src_asn)
+
 
 @cli.group()
 def probe():
-    """
-    Information about ip ranges.
-    """
     pass
 
 
@@ -68,7 +65,7 @@ def probe():
 @click.option('-v6', default=False)
 def probe_run(src_probe_id, dst_probe_id, v6):
     ip_version = 'v6' if v6 else 'v4'
-    run_traceroute_wrapper(get_probe(src_probe_id), get_probe(dst_probe_id), ip_version,'EMPTY')
+    run_traceroute_wrapper(get_probe(src_probe_id), get_probe(dst_probe_id), ip_version, 'EMPTY')
 
 
 if __name__ == "__main__":
