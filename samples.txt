@@ -22,3 +22,7 @@ python cli.py --verbose asn run --src_asn 15766 --dst_asn 45230
 
 #rfc1918-addresses in ixp-file
 python cli.py --verbose asn run --src_asn 33588 --dst_asn 8473
+
+
+#IPV6
+python cli.py --verbose asn run --v6 --src_asn 7922  --dst_asn 8674

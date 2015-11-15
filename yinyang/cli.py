@@ -59,11 +59,14 @@ def asn_run(src_asn, another, dst_asn, v6, draw):
     src_dst['forward'], src_dst['forward_rtt'] = run_traceroute_wrapper(probes['src'], probes['dst'], ip_version,
                                                                         dst_asn)
     src_dst['forward'][0]['descriptor'] = 'S1'
-    src_dst['forward'][-1]['descriptor'] = 'D'
+    if src_dst['forward'][-1]['nodetype'] == 'destination':
+        src_dst['forward'][-1]['descriptor'] = 'D'
     src_dst['reverse'], src_dst['reverse_rtt'] = run_traceroute_wrapper(probes['dst'], probes['src'], ip_version,
                                                                         src_asn)
     src_dst['reverse'][0]['descriptor'] = 'D'
-    src_dst['reverse'][-1]['descriptor'] = 'S1'
+
+    if src_dst['reverse'][-1]['nodetype'] == 'destination':
+        src_dst['reverse'][-1]['descriptor'] = 'S1'
 
     results.append(src_dst)
     if another:
@@ -75,12 +78,16 @@ def asn_run(src_asn, another, dst_asn, v6, draw):
         src2_dst['forward'], src2_dst['forward_rtt'] = run_traceroute_wrapper(another_probe, probes['dst'], ip_version,
                                                                               dst_asn)
         src2_dst['forward'][0]['descriptor'] = 'S2'
-        src2_dst['forward'][-1]['descriptor'] = 'D'
+
+        if src2_dst['forward'][-1]['nodetype'] == 'destination':
+            src2_dst['forward'][-1]['descriptor'] = 'D'
         logger.debug('DST ---> SRC2')
         src2_dst['reverse'], src2_dst['reverse_rtt'] = run_traceroute_wrapper(probes['dst'], another_probe, ip_version,
                                                                               src_asn)
         src2_dst['reverse'][0]['descriptor'] = 'D'
-        src2_dst['reverse'][-1]['descriptor'] = 'S2'
+        if src2_dst['reverse'][-1]['nodetype'] == 'destination':
+            src2_dst['reverse'][-1]['descriptor'] = 'S2'
+
         results.append(src2_dst)
 
     if draw:
