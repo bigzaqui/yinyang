@@ -274,7 +274,7 @@ def draw_path(G, pos, path, g_patches, shifts=None, color='r', linestyle='solid'
     # Finally, create a nice path and display it
     path = MPath(vertices, codes)
     #patch1 = matplotlib.patches.Arrow(0,0,0.1,0.1, edgecolor=color, linestyle=linestyle, linewidth=linewidth, fill=False, alpha=1.0)
-    patch = matplotlib.patches.PathPatch(path, edgecolor=color, linestyle=linestyle, linewidth=linewidth, fill=False, alpha=1.0, label='100ms')
+    patch = matplotlib.patches.PathPatch(path, edgecolor=color, linestyle=linestyle, linewidth=linewidth, fill=False, alpha=1.0)
     ax=matplotlib.pylab.gca()
     ax.add_patch(patch)
     #ax.add_patch(patch1)
@@ -319,9 +319,8 @@ def draw_many_paths(G, pos, paths, g_patches, colors, max_shift=0.02, linewidth=
     if not is_layout_normalized(pos): raise ValueError('Layout is not normalized!')
         
     edge_paths=[to_edge_path(path,G) for path in paths]
-    edge_paths.sort(key=len, reverse=True)   # Sort edge_paths from the longest to the shortest
+    #edge_paths.sort(key=len, reverse=True)   # Sort edge_paths from the longest to the shortest
 
-    
     # Find the largest number of edge_paths traversing the same edge and set single_shift accordingly
     edge2count = {}
     for path in edge_paths:
@@ -334,7 +333,7 @@ def draw_many_paths(G, pos, paths, g_patches, colors, max_shift=0.02, linewidth=
     linestyles=('solid','dashed')
     edge2shift={}
     for i,path in enumerate(edge_paths):
-        shifts=[ edge2shift.setdefault(e, single_shift)  for e in path]      
+        shifts=[ edge2shift.setdefault(e, single_shift)  for e in path]    
         draw_path(G, pos, path, g_patches, color=colors[i/2], linestyle=linestyles[i % len(linestyles)], linewidth=linewidth, shifts=shifts)
         for e in path:   edge2shift[e] += single_shift
 
@@ -359,7 +358,6 @@ def calc_edges_for_path(trace, node_index):
         else:
             edges.append((left,right))
         path.append(right)
-    #print edges, path
     return edges, path
 
 def get_descriptor_map(trace, node_desc):
@@ -428,13 +426,13 @@ def draw_results(results):
         some_edges = left_edges + right_edges
         paths.append(left_path)
         paths.append(right_path)
+        
         for edge in some_edges:
             edges_set.add(edge)
    
     
     edges = list(edges_set)
-    #print node_index
-    #print edges
+
     g.add_edges_from(edges)
     plt.figure(1,figsize=(20,10)) 
 
@@ -485,28 +483,39 @@ def draw_results(results):
     plt.legend(handles=g_patches)
     plt.savefig("output_%s.png" % datetime.datetime.now().time()) 
     plt.show()
+
+    print results
     
 ##########################################
 if __name__ == "__main__":
 
     results = [{'forward': [{'descriptor': 'S1', 'nodetype': 'source', 'rtt': 0},
-              {'descriptor': u'9143', 'nodetype': 'asn', 'rtt': 0},
-              {'descriptor': 'AMS-IX', 'nodetype': 'ixp', 'rtt': 0},
-              {'descriptor': u'3265', 'nodetype': 'asn', 'rtt': 0},
+              {'descriptor': u'33588', 'nodetype': 'asn', 'rtt': 0},
+              {'descriptor': u'174', 'nodetype': 'asn', 'rtt': 0},
+              {'descriptor': u'8473', 'nodetype': 'asn', 'rtt': 0},
               {'descriptor': 'D', 'nodetype': 'destination', 'rtt': 0}],
-  'forward_rtt': 100.2,
+  'forward_rtt': 170.991,
   'reverse': [{'descriptor': 'D', 'nodetype': 'source', 'rtt': 0},
-              {'descriptor': u'3265', 'nodetype': 'asn', 'rtt': 0},
-              {'descriptor': 'AMS-IX', 'nodetype': 'ixp', 'rtt': 0},
-              {'descriptor': u'9143', 'nodetype': 'asn', 'rtt': 0},
+              {'descriptor': u'8473', 'nodetype': 'asn', 'rtt': 0},
+              {'descriptor': u'DIX', 'nodetype': 'ixp', 'rtt': 0},
+              {'descriptor': u'6939', 'nodetype': 'asn', 'rtt': 0},
+              {'descriptor': u'33588', 'nodetype': 'asn', 'rtt': 0},
               {'descriptor': 'S1', 'nodetype': 'destination', 'rtt': 0}],
-  'reverse_rtt': 90.3},
+  'reverse_rtt': 163.655},
  {'forward': [{'descriptor': 'S2', 'nodetype': 'source', 'rtt': 0},
-              {'descriptor': u'3265', 'nodetype': 'asn', 'rtt': 0}],
-  'forward_rtt': 50.1,
+              {'descriptor': u'3265', 'nodetype': 'asn', 'rtt': 0},
+              {'descriptor': u'286', 'nodetype': 'asn', 'rtt': 0},
+              {'descriptor': u'1299', 'nodetype': 'asn', 'rtt': 0},
+              {'descriptor': u'8473', 'nodetype': 'asn', 'rtt': 0},
+              {'descriptor': 'D', 'nodetype': 'destination', 'rtt': 0}],
+  'forward_rtt': 43.241,
   'reverse': [{'descriptor': 'D', 'nodetype': 'source', 'rtt': 0},
-              {'descriptor': u'3265', 'nodetype': 'asn', 'rtt': 0}],
-  'reverse_rtt': 1005.1}]
+              {'descriptor': u'8473', 'nodetype': 'asn', 'rtt': 0},
+              {'descriptor': u'DIX', 'nodetype': 'ixp', 'rtt': 0},
+              {'descriptor': u'6939', 'nodetype': 'asn', 'rtt': 0},
+              {'descriptor': u'3265', 'nodetype': 'asn', 'rtt': 0},              
+              {'descriptor': 'S2', 'nodetype': 'destination', 'rtt': 0}],
+  'reverse_rtt': 46.068}]
 
     draw_results(results)
 
