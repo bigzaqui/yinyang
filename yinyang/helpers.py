@@ -24,7 +24,7 @@ def get_probe_from_close_probe_different_asn(asns, probe, ip_version):
     lon = probe['geometry']['coordinates'][0]
     lat = probe['geometry']['coordinates'][1]
 
-    filters = {"center": "%s%s" % (lat, lon),
+    filters = {"centre": "%s,%s" % (lat, lon),
                "distance": 2,
                "is_public": True, "status": 1}
 
