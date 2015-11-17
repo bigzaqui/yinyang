@@ -25,10 +25,25 @@ Here is an overview diagram of the implemented workflow:
 
 Step by step, the workflow looks like this:
  1. Input source and destination AS
+ 	The script takes these as command-line parameters.
  2. Find a probe in each AS
+ 	The script uses [RIPE Atlas Cousteau][4] to connect to RIPE Atlas and ask for a list of public online probes in an autonomous system. Then just takes one of these probes.
+ 	If the *--another* option is used, it also searches for another probe georgraphically close to the source probe.
  3. Perform traceroutes
+ 	The script again uses [RIPE Atlas Cousteau][4] to schedule a traceroute measurement in RIPE Atlas and then wait for the traceroute result. This is done once for forward and once for reverse directions and if the *--another* option is used - two more traceroutes from and to the second source probe.
  4. Resolve hops
+ 	The script then takes every IP in the traceroutes and:
+ 		- checks if this IP is part of an IXP network. The information about IXP networks is taken from [PeeringDB][6] API, but is currently offline downloaded in a file.
+ 		- uses the [RIPE Stat][5] API to get the API autonomous system. Then consequent AS numbers in the trace are aggregated to form single steps in the AS path.
  5. Draw the paths
+ 	The script then takes the AS paths and draws them in a single graph exported to a png image. It uses the [NetworkX][7] library and [PathDrawer][8] example code.
+
+[4]: https://github.com/RIPE-NCC/ripe-atlas-cousteau "github.com/RIPE-NCC/ripe-atlas-cousteau"
+[5]: https://stat.ripe.net/ "stat.ripe.net"
+[6]: http://docs.peeringdb.com/#peeringdb-20 "http://docs.peeringdb.com/#peeringdb-20"
+[7]: https://github.com/networkx/ "github.com/networkx"
+[8]: https://networkx.lanl.gov/trac/attachment/ticket/199/PathDrawer.py
+
 ### Requirements
 
 
