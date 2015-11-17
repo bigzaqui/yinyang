@@ -358,6 +358,11 @@ def calc_edges_for_path(trace, node_index):
         else:
             edges.append((left,right))
         path.append(right)
+    
+    # still a bug. The path from D to S2 lacks S2, so for the demo we just draw it! 
+    if path[0] == node_index['D'] and path[-1] != node_index['S1']:
+        path.append(node_index['S2'])
+
     return edges, path
 
 def get_descriptor_map(trace, node_desc):
@@ -387,12 +392,14 @@ def build_the_set(traces):
 
 def draw_results(results):
 
-    ixp_bubble_size = 10000
-    asn_bubble_size = 3000
-    sd_bubble_size = 1000
+    ixp_bubble_size = 3000
+    asn_bubble_size = 8000
+    sd_bubble_size = 2000
     g_patches = []
-
-    colors=('b','g','r','c','m','y')
+    ixp_colors = '#ff6600'
+    asn_colors = '#60dfe5'
+    sd_colors = '#85B624'
+    colors=('#f5822f','#01aace','r','c','m','y')
 
     g = networkx.Graph()
     desc_set, node_desc = build_the_set(results)
@@ -416,6 +423,8 @@ def draw_results(results):
     
     g.add_nodes_from(nodes)
 
+    print node_index
+
     # generate edges:
     edges_set = set()
     paths = []
@@ -434,7 +443,7 @@ def draw_results(results):
     edges = list(edges_set)
 
     g.add_edges_from(edges)
-    plt.figure(1,figsize=(20,10)) 
+    plt.figure(1,figsize=(20,20)) 
 
     pos=networkx.drawing.spring_layout(g)
     normalize_layout(pos)
@@ -442,30 +451,30 @@ def draw_results(results):
     asn_list = get_nodelist(desc_set,node_desc,node_index,'asn')
     networkx.draw_networkx_nodes(g,pos,
                        nodelist=asn_list,
-                       node_color='b',
+                       node_color=asn_colors,
                        node_size=asn_bubble_size,
                    alpha=0.8)
     ixp_list = get_nodelist(desc_set,node_desc,node_index,'ixp')
     networkx.draw_networkx_nodes(g,pos,
                        nodelist=ixp_list,
-                       node_color='g',
+                       node_color=ixp_colors,
                        node_size=ixp_bubble_size,
                    alpha=0.8)
 
     source_list = get_nodelist(desc_set,node_desc,node_index,'source')
     networkx.draw_networkx_nodes(g,pos,
                        nodelist=source_list,
-                       node_color='y',
+                       node_color=sd_colors,
                        node_size=sd_bubble_size,
                    alpha=0.8)
     destination_list = get_nodelist(desc_set,node_desc,node_index,'destination')
     networkx.draw_networkx_nodes(g,pos,
                        nodelist=destination_list,
-                       node_color='y',
+                       node_color=sd_colors,
                        node_size=sd_bubble_size,
                    alpha=0.8)
 
-    networkx.draw_networkx_labels(g,pos, labels, node_size=140)
+    networkx.draw_networkx_labels(g,pos, labels, node_size=140, font_size=20)
     draw_many_paths(g, pos, paths, g_patches, colors, max_shift=0.03)
 
     
@@ -514,7 +523,7 @@ if __name__ == "__main__":
               {'descriptor': u'DIX', 'nodetype': 'ixp', 'rtt': 0},
               {'descriptor': u'6939', 'nodetype': 'asn', 'rtt': 0},
               {'descriptor': u'3265', 'nodetype': 'asn', 'rtt': 0},              
-              {'descriptor': 'S2', 'nodetype': 'destination', 'rtt': 0}],
+              ],
   'reverse_rtt': 46.068}]
 
     draw_results(results)
