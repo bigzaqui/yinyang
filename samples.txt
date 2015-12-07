@@ -1,5 +1,5 @@
 # should show asymmetric paths between SFR and Bahnhof, passing decix and amsix
-python cli.py --verbose asn run --src_asn 12322 --dst_asn 8473 --draw --another
+python cli.py --verbose asn run --src_asn 12322 --dst_asn 8473 --draw --add_second_source
 
 # asymmetric paths between bahnhof and russian network, one of the paths via an IXP
 python cli.py --verbose asn run --src_asn 33588 --dst_asn 8473
@@ -7,13 +7,13 @@ python cli.py --verbose asn run --src_asn 33588 --dst_asn 8473
 # Ubergroup new zeeland to International Business machine belgium 
 # 45230->23655->3257->1273->15766
 # 15766->1273->2914->23655->45230
-python cli.py --verbose asn run --src_asn 15766 --dst_asn 45230 --draw --another
+python cli.py --verbose asn run --src_asn 15766 --dst_asn 45230 --draw --add_second_source
 
 # some european hosting companies
 # 9121->1299->3356->31027 , 31027->174->1299->9121
-python cli.py --verbose asn run --src_asn 21060 --dst_asn 42910 --draw --another
+python cli.py --verbose asn run --src_asn 21060 --dst_asn 42910 --draw --add_second_source
 # 31027 3356<>174 29422
-python cli.py --verbose asn run --src_asn 49866 --dst_asn 21060 --draw --another
+python cli.py --verbose asn run --src_asn 49866 --dst_asn 21060 --draw --add_second_source
 
 
 ## bugs
@@ -25,4 +25,4 @@ python cli.py --verbose asn run --src_asn 33588 --dst_asn 8473
 
 
 #IPV6
-python cli.py --verbose asn run --v6 --src_asn 7922  --dst_asn 8674 --draw --another
+python cli.py --verbose asn run --v6 --src_asn 7922  --dst_asn 8674 --draw --add_second_source

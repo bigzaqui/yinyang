@@ -47,5 +47,21 @@ Step by step, the workflow looks like this:
 ### Requirements
 Requirements are listed in the ![requirements.txt](https://github.com/bigzaqui/yinyang/blob/master/yinyang/requirements.txt) file.
 
+To get started with this project just install all the requirements
+
+```
+pip install -r /requirements.txt
+```
+
 ## Usage
+The tool can be executed via a simple CLI call:
+
+```
+python cli.py --verbose asn run --src_asn 12322 --dst_asn 8473 --draw 
+```
+
+This will visualize a path from ASN 12322 to ASN 8473 and the reverse direction. 
+
+For more examples have look at [samples.txt](https://raw.githubusercontent.com/bigzaqui/yinyang/master/samples.txt)
+
 
