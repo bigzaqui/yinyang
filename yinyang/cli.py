@@ -40,11 +40,11 @@ def run_traceroute_wrapper(src_probe, dst_probe, ip_version, dst_asn):
 @asn.command('run')
 @click_log.init()
 @click.option('--src_asn', required=True)
-@click.option('--another/--no-another', default=False)
+@click.option('--add_second_source/--no-add_second_source', default=False)
 @click.option('--dst_asn', required=True)
 @click.option('--v6/--no-v6', default=False)
 @click.option('--draw/--no-draw', default=False)
-def asn_run(src_asn, another, dst_asn, v6, draw):
+def asn_run(src_asn, add_second_source, dst_asn, v6, draw):
     ip_version = 'v6' if v6 else 'v4'
     asns = dict(src=src_asn, dst=dst_asn)
     probes = {}
@@ -69,7 +69,7 @@ def asn_run(src_asn, another, dst_asn, v6, draw):
         src_dst['reverse'][-1]['descriptor'] = 'S1'
 
     results.append(src_dst)
-    if another:
+    if add_second_source:
         another_probe = get_probe_from_close_probe_different_asn([src_asn, dst_asn], probes['src'], ip_version)
 
         src2_dst = {}
