@@ -45,7 +45,7 @@ Step by step, the workflow looks like this:
 [8]: https://networkx.lanl.gov/trac/attachment/ticket/199/PathDrawer.py
 
 ### Requirements
-Requirements are listed in the ![requirements.txt](https://github.com/bigzaqui/yinyang/blob/master/yinyang/requirements.txt) file.
+Requirements are listed in the [requirements.txt](https://raw.githubusercontent.com/bigzaqui/yinyang/master/requirements.txt).
 
 To get started with this project just install all the requirements
 
