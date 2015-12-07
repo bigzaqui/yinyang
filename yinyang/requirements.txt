@@ -13,3 +13,5 @@ six==1.10.0
 socketIO-client==0.6.5
 websocket-client==0.34.0
 wsgiref==0.1.2
+matplotlib==1.4.3
+networkx==1.10

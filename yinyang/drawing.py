@@ -474,7 +474,7 @@ def draw_results(results):
                        node_size=sd_bubble_size,
                    alpha=0.8)
 
-    networkx.draw_networkx_labels(g,pos, labels, node_size=140, font_size=20)
+    networkx.draw_networkx_labels(g,pos, labels, node_size=140, font_size=24)
     draw_many_paths(g, pos, paths, g_patches, colors, max_shift=0.03)
 
     
@@ -497,6 +497,8 @@ def draw_results(results):
     
 ##########################################
 if __name__ == "__main__":
+
+
 
     results = [{'forward': [{'descriptor': 'S1', 'nodetype': 'source', 'rtt': 0},
               {'descriptor': u'33588', 'nodetype': 'asn', 'rtt': 0},

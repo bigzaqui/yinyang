@@ -25,7 +25,7 @@ def get_probe_from_close_probe_different_asn(asns, probe, ip_version):
     lat = probe['geometry']['coordinates'][1]
 
     filters = {"centre": "%s,%s" % (lat, lon),
-               "distance": 2,
+               "distance": 10,
                "is_public": True, "status": 1}
 
     url = 'https://atlas.ripe.net/api/v1/probe/'
